@@ -4,24 +4,17 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    [Header("组件引用")]
-    [SerializeField] private SpriteRenderer characterRenderer; // 角色图标渲染器
+    [Header("Settings")]
+    [SerializeField] private float inputThreshold = 0.1f; // Input threshold
 
-    [Header("设置")]
-    [SerializeField] private float inputThreshold = 0.1f; // 输入阈值
-
-    private int facingDirection = 1; // 1 = 右, -1 = 左
+    private int facingDirection = 1; // 1 = right, -1 = left
 
     void Start()
     {
-        // 自动获取组件（如果未手动指定）
-        if (characterRenderer == null)
-        {
-            characterRenderer = GetComponent<SpriteRenderer>();
-        }
-
-        // 记录初始朝向
-        facingDirection = characterRenderer.flipX ? -1 : 1;
+        // Determine initial facing direction based on localScale.x
+        // Use Mathf.Sign for consistent handling with SetFacingDirection
+        facingDirection = (int)Mathf.Sign(transform.localScale.x);
+        if (facingDirection == 0) facingDirection = 1; // Default to right if scale is 0
     }
 
     void Update()
@@ -33,35 +26,37 @@ public class PlayerControl : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
 
-        // 检测向右移动
+        // Moving right
         if (horizontalInput > inputThreshold)
         {
             SetFacingDirection(1);
         }
-        // 检测向左移动
+        // Moving left
         else if (horizontalInput < -inputThreshold)
         {
             SetFacingDirection(-1);
         }
     }
 
-    // 设置角色朝向
+    // Set character facing direction
     public void SetFacingDirection(int direction)
     {
-        // 只有方向改变时才执行翻转
+        // Only flip when direction changes
         if (direction != facingDirection)
         {
             facingDirection = direction;
 
-            // 应用翻转
-            characterRenderer.flipX = (facingDirection == -1);
+            // Use localScale.x for flipping (consistent with firearrow.cs)
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Abs(scale.x) * facingDirection;
+            transform.localScale = scale;
 
-            // 调试信息，帮助确认问题
-            Debug.Log($"角色朝向已更新: {facingDirection}, flipX: {characterRenderer.flipX}");
+            // Debug output
+            Debug.Log($"Character direction updated: {facingDirection}, localScale.x: {transform.localScale.x}");
         }
     }
 
-    // 提供获取当前朝向的方法（箭矢可能需要这个）
+    // Get current facing direction (for other scripts)
     public int GetFacingDirection()
     {
         return facingDirection;
