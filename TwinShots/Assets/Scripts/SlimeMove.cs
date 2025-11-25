@@ -1,108 +1,117 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-// ȷ�����������
+/// <summary>
+/// 史莱姆移动脚本
+/// 控制史莱姆的水平移动和墙壁检测
+/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
 public class SlimeMove : MonoBehaviour
 {
-    [Header("�ƶ�����")]
-    [Range(0.5f, 10f)] public float moveSpeed = 2f;
-    [Range(0.1f, 2f)] public float checkDistance = 0.6f;
+    [Header("移动设置")]
+    [Tooltip("移动速度")]
+    [Range(0.5f, 10f)]
+    public float moveSpeed = 2f;
+
+    [Tooltip("墙壁检测距离")]
+    [Range(0.1f, 2f)]
+    public float checkDistance = 0.6f;
+
+    [Tooltip("墙壁图层")]
     public LayerMask wallLayer;
-    [Tooltip("���߼����㣬��������ʹ����������")]
+
+    [Tooltip("射线检测起点（可选）")]
     public Transform rayOrigin;
 
-    private int direction = 1; // 1���ң�-1����
+    private int direction = 1; // 1=右, -1=左
     private float originalScaleX;
     private Rigidbody2D rb;
-    private PolygonCollider2D col;
+    private Collider2D col;
 
-    void Awake()
+    private void Awake()
     {
-        // ��Start֮ǰ��ʼ���ؼ����
         rb = GetComponent<Rigidbody2D>();
-        col = GetComponent<PolygonCollider2D>();
+        col = GetComponent<Collider2D>();
     }
 
-    void Start()
+    private void Start()
     {
-        if (rb != null)
-        {
-            // ���ø�������
-            rb.bodyType = RigidbodyType2D.Dynamic;
-            rb.gravityScale = 0;
-            rb.freezeRotation = true;
-            //rb.linearDrag = 0;
-        }
-
-        // ��¼��ʼ����
+        ConfigureRigidbody();
         originalScaleX = Mathf.Abs(transform.localScale.x);
-
-        // ȷ����ʼ������ȷӦ��
         UpdateFacingDirection();
     }
 
-    void FixedUpdate()
+    /// <summary>
+    /// 配置刚体参数
+    /// </summary>
+    private void ConfigureRigidbody()
     {
-        if (rb == null) return; // ��ȫ���
+        if (rb == null) return;
 
-        // ʹ�ø����ƶ�������任��ͻ
+        rb.bodyType = RigidbodyType2D.Dynamic;
+        rb.gravityScale = 0f;
+        rb.freezeRotation = true;
+    }
+
+    private void FixedUpdate()
+    {
+        if (rb == null) return;
+
         rb.velocity = new Vector2(direction * moveSpeed, rb.velocity.y);
-
-        // ���ǽ��
         CheckWallCollision();
     }
 
-    void CheckWallCollision()
+    /// <summary>
+    /// 检测墙壁碰撞
+    /// </summary>
+    private void CheckWallCollision()
     {
         if (wallLayer == 0)
         {
-            Debug.LogWarning("MonsterMovement: δ����ǽ��ͼ�㣡", this);
+            Debug.LogWarning("SlimeMove: 未设置墙壁图层！", this);
             return;
         }
 
-        // �����������
-        Vector2 origin = rayOrigin != null ?
-            (Vector2)rayOrigin.position :
-            (Vector2)transform.position + (Vector2.right * direction * (col.bounds.extents.x * 0.9f));
-
-        // ���߼��
-        RaycastHit2D hit = Physics2D.Raycast(
-            origin,
-            Vector2.right * direction,
-            checkDistance,
-            wallLayer
-        );
+        Vector2 origin = GetRayOrigin();
+        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.right * direction, checkDistance, wallLayer);
 
         if (hit)
         {
-            // ת��
             direction *= -1;
             UpdateFacingDirection();
         }
     }
 
-    // ���³���
-    void UpdateFacingDirection()
+    /// <summary>
+    /// 获取射线起点
+    /// </summary>
+    private Vector2 GetRayOrigin()
+    {
+        if (rayOrigin != null)
+        {
+            return rayOrigin.position;
+        }
+
+        float offsetX = col != null ? col.bounds.extents.x * 0.9f : 0.1f;
+        return (Vector2)transform.position + Vector2.right * direction * offsetX;
+    }
+
+    /// <summary>
+    /// 更新朝向
+    /// </summary>
+    private void UpdateFacingDirection()
     {
         Vector3 newScale = transform.localScale;
         newScale.x = originalScaleX * direction;
         transform.localScale = newScale;
     }
 
-    // �������� gizmo
-    void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected()
     {
-        if (Application.isPlaying)
-        {
-            Gizmos.color = Color.red;
-            Vector2 origin = rayOrigin != null ?
-                (Vector2)rayOrigin.position :
-                (Vector2)transform.position + (Vector2.right * direction * (col ? col.bounds.extents.x * 0.9f : 0.1f));
+        if (!Application.isPlaying) return;
 
-            Gizmos.DrawRay(origin, Vector2.right * direction * checkDistance);
-        }
+        Gizmos.color = Color.red;
+        Vector2 origin = GetRayOrigin();
+        Gizmos.DrawRay(origin, Vector2.right * direction * checkDistance);
     }
 }

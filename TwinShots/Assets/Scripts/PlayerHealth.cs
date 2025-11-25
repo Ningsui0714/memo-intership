@@ -1,85 +1,111 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ç©å®¶ç”Ÿå‘½å€¼è„šæœ¬
+/// ç®¡ç†ç©å®¶å—ä¼¤ã€æ— æ•ŒçŠ¶æ€å’Œé—ªçƒæ•ˆæœ
+/// </summary>
 public class PlayerHealth : MonoBehaviour
 {
-    [Header("ÎŞµĞÉèÖÃ")]
-    public float invincibilityTime = 2f; // ÎŞµĞ³ÖĞøÊ±¼ä£¨Ãë£©
-    public float blinkInterval = 0.2f; // ÉÁË¸¼ä¸ô£¨Ãë£©
+    [Header("æ— æ•Œè®¾ç½®")]
+    [Tooltip("æ— æ•ŒæŒç»­æ—¶é—´ï¼ˆç§’ï¼‰")]
+    [Range(0.5f, 5f)]
+    public float invincibilityTime = 2f;
 
-    [Header("ĞÄÊıÏÔÊ¾ÒıÓÃ")]
-    public HeartDisplay heartDisplay; // ÍÏÈë³¡¾°ÖĞµÄHeartDisplay¶ÔÏó
+    [Tooltip("é—ªçƒé—´éš”ï¼ˆç§’ï¼‰")]
+    [Range(0.05f, 0.5f)]
+    public float blinkInterval = 0.2f;
+
+    [Header("ç”Ÿå‘½æ˜¾ç¤ºç»„ä»¶")]
+    [Tooltip("æ‹–å…¥åœºæ™¯ä¸­çš„HeartDisplayå¯¹è±¡")]
+    public HeartDisplay heartDisplay;
 
     private bool isInvincible = false;
     private float invincibilityTimer = 0f;
     private float blinkTimer = 0f;
-    private SpriteRenderer playerSprite; // Íæ¼ÒµÄ¾«ÁéäÖÈ¾Æ÷
+    private SpriteRenderer playerSprite;
 
-    void Start()
+    private void Start()
     {
-        // »ñÈ¡Íæ¼Ò×ÔÉíµÄSpriteRenderer£¨ÓÃÓÚÉÁË¸£©
         playerSprite = GetComponent<SpriteRenderer>();
 
-        // ×Ô¶¯²éÕÒĞÄÊıÏÔÊ¾×é¼ş£¨Èç¹ûÎ´ÊÖ¶¯Ö¸¶¨£©
+        // è‡ªåŠ¨æŸ¥æ‰¾ç”Ÿå‘½æ˜¾ç¤ºç»„ä»¶ï¼ˆå¦‚æœæœªæ‰‹åŠ¨æŒ‡å®šï¼‰
         if (heartDisplay == null)
         {
             heartDisplay = FindObjectOfType<HeartDisplay>();
             if (heartDisplay == null)
             {
-                Debug.LogError("Î´ÕÒµ½HeartDisplay×é¼ş£¡ÇëÔÚInspectorÖĞÖ¸¶¨");
+                Debug.LogError("æœªæ‰¾åˆ°HeartDisplayç»„ä»¶ï¼Œè¯·åœ¨Inspectorä¸­æŒ‡å®š");
             }
         }
     }
 
-    void Update()
+    private void Update()
     {
-        // ´¦ÀíÎŞµĞ×´Ì¬¼ÆÊ±
-        if (isInvincible)
-        {
-            invincibilityTimer += Time.deltaTime;
-            blinkTimer += Time.deltaTime;
+        if (!isInvincible) return;
 
-            // ÎŞµĞÊ±¼ä½áÊø£¬»Ö¸´Õı³£×´Ì¬
-            if (invincibilityTimer >= invincibilityTime)
-            {
-                isInvincible = false;
-                invincibilityTimer = 0f;
-                playerSprite.enabled = true; // È·±£×îºóÊÇÏÔÊ¾×´Ì¬
-            }
-            // ´¦ÀíÉÁË¸Ğ§¹û
-            else if (blinkTimer >= blinkInterval)
-            {
-                playerSprite.enabled = !playerSprite.enabled; // ÇĞ»»ÏÔÊ¾/Òş²Ø
-                blinkTimer = 0f;
-            }
-        }
+        UpdateInvincibility();
     }
 
-    // ¿ÛÑª·½·¨£¨¹©¹ÖÎïÅö×²Ê±µ÷ÓÃ£©
-    public void TakeDamage()
+    /// <summary>
+    /// æ›´æ–°æ— æ•ŒçŠ¶æ€
+    /// </summary>
+    private void UpdateInvincibility()
     {
-        // Èç¹û´¦ÓÚÎŞµĞ×´Ì¬£¬²»¿ÛÑª
-        if (isInvincible)
+        invincibilityTimer += Time.deltaTime;
+        blinkTimer += Time.deltaTime;
+
+        // æ— æ•Œæ—¶é—´ç»“æŸ
+        if (invincibilityTimer >= invincibilityTime)
         {
-            Debug.Log("´¦ÓÚÎŞµĞ×´Ì¬£¬²»¿ÛÑª");
+            EndInvincibility();
             return;
         }
 
-        // ¿ÛÑªÂß¼­
-        if (heartDisplay != null)
+        // å¤„ç†é—ªçƒæ•ˆæœ
+        if (blinkTimer >= blinkInterval)
         {
-            Debug.Log("¿ÛÑª£¡");
-            heartDisplay.LoseHeart(); // µ÷ÓÃĞÄÊıÏÔÊ¾×é¼ş¿ÛÑª
-            StartInvincibility(); // ½øÈëÎŞµĞ×´Ì¬
-        }
-        else
-        {
-            Debug.LogError("HeartDisplay×é¼şÎ´ÕÒµ½£¬ÎŞ·¨¿ÛÑª£¡");
+            playerSprite.enabled = !playerSprite.enabled;
+            blinkTimer = 0f;
         }
     }
 
-    // ¿ªÊ¼ÎŞµĞ×´Ì¬
+    /// <summary>
+    /// ç»“æŸæ— æ•ŒçŠ¶æ€
+    /// </summary>
+    private void EndInvincibility()
+    {
+        isInvincible = false;
+        invincibilityTimer = 0f;
+        blinkTimer = 0f;
+        playerSprite.enabled = true;
+    }
+
+    /// <summary>
+    /// å—åˆ°ä¼¤å®³ï¼ˆä¾›æ€ªç‰©ç¢°æ’æ—¶è°ƒç”¨ï¼‰
+    /// </summary>
+    public void TakeDamage()
+    {
+        if (isInvincible)
+        {
+            Debug.Log("å¤„äºæ— æ•ŒçŠ¶æ€ï¼Œæ— æ³•å—ä¼¤");
+            return;
+        }
+
+        if (heartDisplay != null)
+        {
+            Debug.Log("ç©å®¶å—ä¼¤ï¼");
+            heartDisplay.LoseHeart();
+            StartInvincibility();
+        }
+        else
+        {
+            Debug.LogError("HeartDisplayç»„ä»¶æœªæ‰¾åˆ°ï¼Œæ— æ³•æ‰£è¡€ï¼");
+        }
+    }
+
+    /// <summary>
+    /// å¼€å§‹æ— æ•ŒçŠ¶æ€
+    /// </summary>
     private void StartInvincibility()
     {
         isInvincible = true;
@@ -87,4 +113,3 @@ public class PlayerHealth : MonoBehaviour
         blinkTimer = 0f;
     }
 }
-
