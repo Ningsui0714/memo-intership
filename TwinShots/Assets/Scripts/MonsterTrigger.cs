@@ -1,43 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// æ€ªç‰©è§¦å‘å™¨è„šæœ¬
+/// å¤„ç†æ€ªç‰©ä¸ç©å®¶çš„ç¢°æ’æ£€æµ‹å¹¶é€ æˆä¼¤å®³
+/// </summary>
 public class MonsterTrigger : MonoBehaviour
 {
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // ¼ì²âÊÇ·ñÅö×²µ½Íæ¼Ò
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            Debug.Log("¹ÖÎïÅö×²µ½Íæ¼Ò");
-            // »ñÈ¡Íæ¼ÒµÄ½¡¿µ×é¼ş²¢¿ÛÑª
-            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(); // µ÷ÓÃ¿ÛÑª·½·¨
-            }
-            else
-            {
-                Debug.LogError("Íæ¼Ò¶ÔÏóÉÏÃ»ÓĞPlayerHealth×é¼ş£¡");
-            }
-        }
+        HandlePlayerContact(collision.gameObject);
     }
 
-    // Èç¹ûÊ¹ÓÃ´¥·¢Æ÷
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        HandlePlayerContact(other.gameObject);
+    }
+
+    /// <summary>
+    /// å¤„ç†ç©å®¶æ¥è§¦
+    /// </summary>
+    /// <param name="target">æ¥è§¦çš„ç›®æ ‡å¯¹è±¡</param>
+    private void HandlePlayerContact(GameObject target)
+    {
+        if (!target.CompareTag("Player")) return;
+
+        Debug.Log("æ€ªç‰©ç¢°æ’åˆ°ç©å®¶");
+
+        PlayerHealth playerHealth = target.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
         {
-            Debug.Log("¹ÖÎï´¥·¢µ½Íæ¼Ò");
-            PlayerHealth playerHealth = other.gameObject.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage();
-            }
-            else
-            {
-                Debug.LogError("Íæ¼Ò¶ÔÏóÉÏÃ»ÓĞPlayerHealth×é¼ş£¡");
-            }
+            playerHealth.TakeDamage();
+        }
+        else
+        {
+            Debug.LogError("ç©å®¶å¯¹è±¡æ²¡æœ‰PlayerHealthç»„ä»¶ï¼");
         }
     }
 }

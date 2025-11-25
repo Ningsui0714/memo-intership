@@ -1,15 +1,47 @@
-
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// 主菜单脚本
+/// 处理场景切换功能
+/// </summary>
 public class MainMenu : MonoBehaviour
 {
-    public void jumptoplayscene(string sceneName)
+    /// <summary>
+    /// 跳转到游戏场景（使用场景名称）
+    /// </summary>
+    /// <param name="sceneName">场景名称</param>
+    public void JumpToPlayScene(string sceneName)
     {
-        SceneManager.LoadScene(1);//1�������0��ʾ�����ı��
+        SceneManager.LoadScene(sceneName);
     }
- 
+
+    /// <summary>
+    /// 跳转到默认游戏场景
+    /// </summary>
+    public void JumpToPlayScene()
+    {
+        SceneManager.LoadScene(1); // 默认加载第一个游戏场景
+    }
+
+    /// <summary>
+    /// 跳转到指定索引的场景
+    /// </summary>
+    /// <param name="sceneIndex">场景索引</param>
+    public void JumpToScene(int sceneIndex)
+    {
+        SceneManager.LoadScene(sceneIndex);
+    }
+
+    /// <summary>
+    /// 退出游戏
+    /// </summary>
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
 }
-                          

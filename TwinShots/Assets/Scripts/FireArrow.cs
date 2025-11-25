@@ -1,68 +1,72 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 发射箭矢脚本
+/// 处理玩家射击输入和箭矢发射逻辑
+/// </summary>
+[RequireComponent(typeof(Flip))]
 public class FireArrow : MonoBehaviour
 {
-    [Header("��ʸ����")]
-    public GameObject rightArrowPrefab;  // ���ҷ���ļ�
-    public GameObject leftArrowPrefab;   // ������ļ�
-    public Transform firePoint;          // �����
-    public float arrowSpeed = 10f;       // �����ٶ�
-    public float fireRate = 0.5f;        // ������
+    [Header("箭矢配置")]
+    [Tooltip("向右发射的箭矢预制体")]
+    public GameObject rightArrowPrefab;
+
+    [Tooltip("向左发射的箭矢预制体")]
+    public GameObject leftArrowPrefab;
+
+    [Tooltip("发射点位置")]
+    public Transform firePoint;
+
+    [Tooltip("箭矢飞行速度")]
+    [Range(5f, 30f)]
+    public float arrowSpeed = 10f;
+
+    [Tooltip("发射间隔（秒）")]
+    [Range(0.1f, 2f)]
+    public float fireRate = 0.5f;
 
     private float nextFireTime = 0f;
-    private int facingDirection = 1;     // 1: ����, -1: ����
+    private Flip flipComponent;
 
-    void Update()
+    private void Start()
     {
-        // ���½�ɫ���򣨸�����Ľ�ɫ�ƶ��߼�������
-        UpdateFacingDirection();
+        flipComponent = GetComponent<Flip>();
+    }
 
-        // �ո�����䣬������ȴʱ��֮��
+    private void Update()
+    {
+        // 空格键发射箭矢，检查冷却时间
         if (Input.GetKeyDown(KeyCode.Space) && Time.time >= nextFireTime)
         {
             ShootArrow();
-            nextFireTime = Time.time + fireRate;  // ������һ�οɷ���ʱ��
+            nextFireTime = Time.time + fireRate;
         }
     }
 
-    // ���½�ɫ���򣨸���ʵ���ƶ����Ʒ�ʽ�޸ģ�
-    void UpdateFacingDirection()
+    /// <summary>
+    /// 发射箭矢
+    /// </summary>
+    private void ShootArrow()
     {
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        if (horizontalInput != 0)
-        {
-            facingDirection = (int)Mathf.Sign(horizontalInput);
-            Vector3 scale = transform.localScale;
-            scale.x = Mathf.Abs(scale.x) * facingDirection;
-            transform.localScale = scale;
-        }
-    }
+        int facingDirection = flipComponent.GetFacingDirection();
 
-    void ShootArrow()
-    {
-        // ���ݳ���ѡ��ͬ�ļ�Ԥ����
+        // 根据朝向选择对应的箭矢预制体
         GameObject arrowPrefab = facingDirection == 1 ? rightArrowPrefab : leftArrowPrefab;
 
-        // ȷ��Ԥ�����Ѹ�ֵ
         if (arrowPrefab == null)
         {
-            Debug.LogError("������ʸԤ���壡", this);
+            Debug.LogError("请设置箭矢预制体！", this);
             return;
         }
 
-        // �ڷ�������ɼ�
+        // 在发射点生成箭矢
         GameObject arrow = Instantiate(arrowPrefab, firePoint.position, firePoint.rotation);
 
-        // ��ȡ���ĸ��������ʩ����
+        // 设置箭矢速度
         Rigidbody2D rb = arrow.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            // ���ݳ������÷��䷽��
             rb.velocity = firePoint.right * facingDirection * arrowSpeed;
         }
-
-
     }
 }

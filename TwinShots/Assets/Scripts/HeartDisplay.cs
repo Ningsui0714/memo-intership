@@ -1,16 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 生命值显示脚本
+/// 管理生命值并更新对应的精灵图显示
+/// </summary>
 public class HeartDisplay : MonoBehaviour
 {
-    public Sprite heart3, heart2, heart1, heart0;
+    [Header("生命值图片")]
+    public Sprite heart3;
+    public Sprite heart2;
+    public Sprite heart1;
+    public Sprite heart0;
+
+    [Header("显示设置")]
     public SpriteRenderer displayRenderer;
-    public Vector3 heartScale = new Vector3(2, 2, 1);
+    public Vector3 heartScale = new Vector3(2f, 2f, 1f);
 
     private int currentHearts = 3;
 
-    void Start()
+    private void Start()
+    {
+        InitializeRenderer();
+        UpdateHeartImage();
+    }
+
+    /// <summary>
+    /// 初始化精灵渲染器
+    /// </summary>
+    private void InitializeRenderer()
     {
         if (displayRenderer == null)
         {
@@ -21,33 +38,40 @@ public class HeartDisplay : MonoBehaviour
             }
         }
         displayRenderer.transform.localScale = heartScale;
-        UpdateHeartImage();
     }
 
-    // ��Ѫ��������PlayerHealth���ã�
+    /// <summary>
+    /// 减少一颗心（供PlayerHealth调用）
+    /// </summary>
     public void LoseHeart()
     {
         if (currentHearts > 0)
         {
             currentHearts--;
             UpdateHeartImage();
-            Debug.Log("��ǰ����: " + currentHearts);
         }
     }
 
+    /// <summary>
+    /// 更新生命值显示
+    /// </summary>
     private void UpdateHeartImage()
     {
         switch (currentHearts)
         {
-            case 3: displayRenderer.sprite = heart3; break;
-            case 2: displayRenderer.sprite = heart2; break;
-            case 1: displayRenderer.sprite = heart1; break;
+            case 3:
+                displayRenderer.sprite = heart3;
+                break;
+            case 2:
+                displayRenderer.sprite = heart2;
+                break;
+            case 1:
+                displayRenderer.sprite = heart1;
+                break;
             case 0:
                 displayRenderer.sprite = heart0;
-                Time.timeScale = 0; // ��Ϸ����
+                Time.timeScale = 0f; // 游戏暂停
                 break;
         }
     }
 }
-
-
