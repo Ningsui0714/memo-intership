@@ -4,24 +4,17 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    [Header("×é¼şÒıÓÃ")]
-    [SerializeField] private SpriteRenderer characterRenderer; // ½ÇÉ«Í¼±êäÖÈ¾Æ÷
+    [Header("è®¾ç½®")]
+    [SerializeField] private float inputThreshold = 0.1f; // è¾“å…¥é˜ˆå€¼
 
-    [Header("ÉèÖÃ")]
-    [SerializeField] private float inputThreshold = 0.1f; // ÊäÈëãĞÖµ
-
-    private int facingDirection = 1; // 1 = ÓÒ, -1 = ×ó
+    private int facingDirection = 1; // 1 = å³, -1 = å·¦
 
     void Start()
     {
-        // ×Ô¶¯»ñÈ¡×é¼ş£¨Èç¹ûÎ´ÊÖ¶¯Ö¸¶¨£©
-        if (characterRenderer == null)
-        {
-            characterRenderer = GetComponent<SpriteRenderer>();
-        }
-
-        // ¼ÇÂ¼³õÊ¼³¯Ïò
-        facingDirection = characterRenderer.flipX ? -1 : 1;
+        // æ ¹æ® localScale.x ç¡®å®šåˆå§‹æœå‘
+        // ä½¿ç”¨ Mathf.Sign ä¸ SetFacingDirection ä¿æŒä¸€è‡´
+        facingDirection = (int)Mathf.Sign(transform.localScale.x);
+        if (facingDirection == 0) facingDirection = 1; // å¦‚æœç¼©æ”¾ä¸º0ï¼Œé»˜è®¤æœå³
     }
 
     void Update()
@@ -33,35 +26,37 @@ public class PlayerControl : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
 
-        // ¼ì²âÏòÓÒÒÆ¶¯
+        // å‘å³ç§»åŠ¨
         if (horizontalInput > inputThreshold)
         {
             SetFacingDirection(1);
         }
-        // ¼ì²âÏò×óÒÆ¶¯
+        // å‘å·¦ç§»åŠ¨
         else if (horizontalInput < -inputThreshold)
         {
             SetFacingDirection(-1);
         }
     }
 
-    // ÉèÖÃ½ÇÉ«³¯Ïò
+    // è®¾ç½®è§’è‰²æœå‘
     public void SetFacingDirection(int direction)
     {
-        // Ö»ÓĞ·½Ïò¸Ä±äÊ±²ÅÖ´ĞĞ·­×ª
+        // åªæœ‰æ–¹å‘æ”¹å˜æ—¶æ‰æ‰§è¡Œç¿»è½¬
         if (direction != facingDirection)
         {
             facingDirection = direction;
 
-            // Ó¦ÓÃ·­×ª
-            characterRenderer.flipX = (facingDirection == -1);
+            // ä½¿ç”¨ localScale.x è¿›è¡Œç¿»è½¬ï¼ˆä¸ firearrow.cs ä¿æŒä¸€è‡´ï¼‰
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Abs(scale.x) * facingDirection;
+            transform.localScale = scale;
 
-            // µ÷ÊÔĞÅÏ¢£¬°ïÖúÈ·ÈÏÎÊÌâ
-            Debug.Log($"½ÇÉ«³¯ÏòÒÑ¸üĞÂ: {facingDirection}, flipX: {characterRenderer.flipX}");
+            // è°ƒè¯•è¾“å‡º
+            Debug.Log($"è§’è‰²æ–¹å‘å·²æ›´æ–°: {facingDirection}, localScale.x: {transform.localScale.x}");
         }
     }
 
-    // Ìá¹©»ñÈ¡µ±Ç°³¯ÏòµÄ·½·¨£¨¼ıÊ¸¿ÉÄÜĞèÒªÕâ¸ö£©
+    // è·å–å½“å‰æœå‘ï¼ˆä¾›å…¶ä»–è„šæœ¬ä½¿ç”¨ï¼‰
     public int GetFacingDirection()
     {
         return facingDirection;
