@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerControl : MonoBehaviour
+public class Flip : MonoBehaviour
 {
     [Header("设置")]
     [SerializeField] private float inputThreshold = 0.1f; // 输入阈值

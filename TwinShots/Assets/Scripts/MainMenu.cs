@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class jumpScenes : MonoBehaviour
+public class MainMenu : MonoBehaviour
 {
     public void jumptoplayscene(string sceneName)
     {
-        SceneManager.LoadScene(1);//1ºÍÏÂÃæµÄ0±íÊ¾³¡¾°µÄ±àºÅ
+        SceneManager.LoadScene(1);//1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½
     }
  
 }

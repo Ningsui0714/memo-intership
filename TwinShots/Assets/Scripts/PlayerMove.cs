@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class playermove : MonoBehaviour
+public class PlayerMove : MonoBehaviour
 {
     private Rigidbody2D rb;
     // Start is called before the first frame update

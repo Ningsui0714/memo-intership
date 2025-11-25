@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class arrow : MonoBehaviour
+public class Arrow : MonoBehaviour
 {
     public bool destroyOnHit = true;
     public float blinkInterval = 0.2f;
@@ -19,10 +19,10 @@ public class arrow : MonoBehaviour
     }
     IEnumerator DestroyAfterDelay(float delay)
     {
-        // µÈ´ýÖ¸¶¨Ê±¼ä
+        // ï¿½È´ï¿½Ö¸ï¿½ï¿½Ê±ï¿½ï¿½
         yield return new WaitForSeconds(delay);
 
-        // Ö´ÐÐÏú»Ù£¨¿ÉÒÔÔÙ¼ÓÉÏ¶îÍâµÄÑÓ³Ù£©
+        // Ö´ï¿½ï¿½ï¿½ï¿½ï¿½Ù£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¼ï¿½ï¿½Ï¶ï¿½ï¿½ï¿½ï¿½ï¿½Ó³Ù£ï¿½
         Destroy(gameObject);
     }
 }
