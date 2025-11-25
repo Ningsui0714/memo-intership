@@ -49,7 +49,6 @@ public class HeartDisplay : MonoBehaviour
         {
             currentHearts--;
             UpdateHeartImage();
-            Debug.Log($"当前生命: {currentHearts}");
         }
     }
 

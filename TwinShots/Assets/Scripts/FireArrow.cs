@@ -4,6 +4,7 @@ using UnityEngine;
 /// 发射箭矢脚本
 /// 处理玩家射击输入和箭矢发射逻辑
 /// </summary>
+[RequireComponent(typeof(Flip))]
 public class FireArrow : MonoBehaviour
 {
     [Header("箭矢配置")]
@@ -25,20 +26,15 @@ public class FireArrow : MonoBehaviour
     public float fireRate = 0.5f;
 
     private float nextFireTime = 0f;
-    private int facingDirection = 1; // 1: 向右, -1: 向左
     private Flip flipComponent;
 
     private void Start()
     {
-        // 尝试获取 Flip 组件以同步朝向
         flipComponent = GetComponent<Flip>();
     }
 
     private void Update()
     {
-        // 更新角色朝向
-        UpdateFacingDirection();
-
         // 空格键发射箭矢，检查冷却时间
         if (Input.GetKeyDown(KeyCode.Space) && Time.time >= nextFireTime)
         {
@@ -48,33 +44,12 @@ public class FireArrow : MonoBehaviour
     }
 
     /// <summary>
-    /// 更新角色朝向（根据输入或 Flip 组件）
-    /// </summary>
-    private void UpdateFacingDirection()
-    {
-        // 优先使用 Flip 组件的朝向
-        if (flipComponent != null)
-        {
-            facingDirection = flipComponent.GetFacingDirection();
-            return;
-        }
-
-        // 否则根据输入自行处理
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        if (horizontalInput != 0)
-        {
-            facingDirection = (int)Mathf.Sign(horizontalInput);
-            Vector3 scale = transform.localScale;
-            scale.x = Mathf.Abs(scale.x) * facingDirection;
-            transform.localScale = scale;
-        }
-    }
-
-    /// <summary>
     /// 发射箭矢
     /// </summary>
     private void ShootArrow()
     {
+        int facingDirection = flipComponent.GetFacingDirection();
+
         // 根据朝向选择对应的箭矢预制体
         GameObject arrowPrefab = facingDirection == 1 ? rightArrowPrefab : leftArrowPrefab;
 

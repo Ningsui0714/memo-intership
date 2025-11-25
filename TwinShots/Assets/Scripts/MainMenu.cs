@@ -8,19 +8,20 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     /// <summary>
-    /// 跳转到游戏场景
+    /// 跳转到游戏场景（使用场景名称）
     /// </summary>
-    /// <param name="sceneName">场景名称（可选）</param>
+    /// <param name="sceneName">场景名称</param>
     public void JumpToPlayScene(string sceneName)
     {
-        if (!string.IsNullOrEmpty(sceneName))
-        {
-            SceneManager.LoadScene(sceneName);
-        }
-        else
-        {
-            SceneManager.LoadScene(1); // 默认加载第一个游戏场景
-        }
+        SceneManager.LoadScene(sceneName);
+    }
+
+    /// <summary>
+    /// 跳转到默认游戏场景
+    /// </summary>
+    public void JumpToPlayScene()
+    {
+        SceneManager.LoadScene(1); // 默认加载第一个游戏场景
     }
 
     /// <summary>
