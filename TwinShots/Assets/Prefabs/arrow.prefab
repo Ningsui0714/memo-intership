@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 5735918048245728116}
   - component: {fileID: 7876172822085835193}
   - component: {fileID: -1200343018280476936}
+  - component: {fileID: 6316939932417354013}
+  - component: {fileID: 2840799055040504823}
   m_Layer: 0
   m_Name: arrow
   m_TagString: Untagged
@@ -126,9 +128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f03f340cbba1fc4a808a6a3899bc2a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 1
-  destroyOnImpactDelay: 0.1
   destroyOnHit: 1
+  destroyDelay: 8
 --- !u!60 &-1200343018280476936
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -180,3 +181,31 @@ PolygonCollider2D:
       - {x: 0.24, y: 0.04}
       - {x: 0.22, y: 0.049999997}
   m_UseDelaunayMesh: 0
+--- !u!114 &6316939932417354013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8392562526432086545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce46a23053bb6a7458dd7a168246f539, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  surfaceArc: 126
+  useOneWay: 1
+--- !u!114 &2840799055040504823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8392562526432086545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce46a23053bb6a7458dd7a168246f539, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  surfaceArc: 180
+  useOneWay: 1
