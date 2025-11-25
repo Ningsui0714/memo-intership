@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    [Header("Settings")]
-    [SerializeField] private float inputThreshold = 0.1f; // Input threshold
+    [Header("设置")]
+    [SerializeField] private float inputThreshold = 0.1f; // 输入阈值
 
-    private int facingDirection = 1; // 1 = right, -1 = left
+    private int facingDirection = 1; // 1 = 右, -1 = 左
 
     void Start()
     {
-        // Determine initial facing direction based on localScale.x
-        // Use Mathf.Sign for consistent handling with SetFacingDirection
+        // 根据 localScale.x 确定初始朝向
+        // 使用 Mathf.Sign 与 SetFacingDirection 保持一致
         facingDirection = (int)Mathf.Sign(transform.localScale.x);
-        if (facingDirection == 0) facingDirection = 1; // Default to right if scale is 0
+        if (facingDirection == 0) facingDirection = 1; // 如果缩放为0，默认朝右
     }
 
     void Update()
@@ -26,37 +26,37 @@ public class PlayerControl : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
 
-        // Moving right
+        // 向右移动
         if (horizontalInput > inputThreshold)
         {
             SetFacingDirection(1);
         }
-        // Moving left
+        // 向左移动
         else if (horizontalInput < -inputThreshold)
         {
             SetFacingDirection(-1);
         }
     }
 
-    // Set character facing direction
+    // 设置角色朝向
     public void SetFacingDirection(int direction)
     {
-        // Only flip when direction changes
+        // 只有方向改变时才执行翻转
         if (direction != facingDirection)
         {
             facingDirection = direction;
 
-            // Use localScale.x for flipping (consistent with firearrow.cs)
+            // 使用 localScale.x 进行翻转（与 firearrow.cs 保持一致）
             Vector3 scale = transform.localScale;
             scale.x = Mathf.Abs(scale.x) * facingDirection;
             transform.localScale = scale;
 
-            // Debug output
-            Debug.Log($"Character direction updated: {facingDirection}, localScale.x: {transform.localScale.x}");
+            // 调试输出
+            Debug.Log($"角色方向已更新: {facingDirection}, localScale.x: {transform.localScale.x}");
         }
     }
 
-    // Get current facing direction (for other scripts)
+    // 获取当前朝向（供其他脚本使用）
     public int GetFacingDirection()
     {
         return facingDirection;
