@@ -2,26 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// È·±£×é¼þÍêÕûÐÔ
+// È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
-public class MonsterMovement : MonoBehaviour
+public class SlimeMove : MonoBehaviour
 {
-    [Header("ÒÆ¶¯ÉèÖÃ")]
+    [Header("ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½")]
     [Range(0.5f, 10f)] public float moveSpeed = 2f;
     [Range(0.1f, 2f)] public float checkDistance = 0.6f;
     public LayerMask wallLayer;
-    [Tooltip("ÉäÏß¼ì²âÆðµã£¬²»ÉèÖÃÔòÊ¹ÓÃÎïÌåÖÐÐÄ")]
+    [Tooltip("ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
     public Transform rayOrigin;
 
-    private int direction = 1; // 1ÏòÓÒ£¬-1Ïò×ó
+    private int direction = 1; // 1ï¿½ï¿½ï¿½Ò£ï¿½-1ï¿½ï¿½ï¿½ï¿½
     private float originalScaleX;
     private Rigidbody2D rb;
     private PolygonCollider2D col;
 
     void Awake()
     {
-        // ÔÚStartÖ®Ç°³õÊ¼»¯¹Ø¼ü×é¼þ
+        // ï¿½ï¿½StartÖ®Ç°ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<PolygonCollider2D>();
     }
@@ -30,28 +30,28 @@ public class MonsterMovement : MonoBehaviour
     {
         if (rb != null)
         {
-            // ÅäÖÃ¸ÕÌåÊôÐÔ
+            // ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             rb.bodyType = RigidbodyType2D.Dynamic;
             rb.gravityScale = 0;
             rb.freezeRotation = true;
             //rb.linearDrag = 0;
         }
 
-        // ¼ÇÂ¼³õÊ¼Ëõ·Å
+        // ï¿½ï¿½Â¼ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
         originalScaleX = Mathf.Abs(transform.localScale.x);
 
-        // È·±£³õÊ¼·½ÏòÕýÈ·Ó¦ÓÃ
+        // È·ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·Ó¦ï¿½ï¿½
         UpdateFacingDirection();
     }
 
     void FixedUpdate()
     {
-        if (rb == null) return; // °²È«¼ì²é
+        if (rb == null) return; // ï¿½ï¿½È«ï¿½ï¿½ï¿½
 
-        // Ê¹ÓÃ¸ÕÌåÒÆ¶¯£¬±ÜÃâ±ä»»³åÍ»
+        // Ê¹ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä»»ï¿½ï¿½Í»
         rb.velocity = new Vector2(direction * moveSpeed, rb.velocity.y);
 
-        // ¼ì²âÇ½±Ú
+        // ï¿½ï¿½ï¿½Ç½ï¿½ï¿½
         CheckWallCollision();
     }
 
@@ -59,16 +59,16 @@ public class MonsterMovement : MonoBehaviour
     {
         if (wallLayer == 0)
         {
-            Debug.LogWarning("MonsterMovement: Î´ÉèÖÃÇ½±ÚÍ¼²ã£¡", this);
+            Debug.LogWarning("MonsterMovement: Î´ï¿½ï¿½ï¿½ï¿½Ç½ï¿½ï¿½Í¼ï¿½ã£¡", this);
             return;
         }
 
-        // ¼ÆËãÉäÏßÆðµã
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         Vector2 origin = rayOrigin != null ?
             (Vector2)rayOrigin.position :
             (Vector2)transform.position + (Vector2.right * direction * (col.bounds.extents.x * 0.9f));
 
-        // ÉäÏß¼ì²â
+        // ï¿½ï¿½ï¿½ß¼ï¿½ï¿½
         RaycastHit2D hit = Physics2D.Raycast(
             origin,
             Vector2.right * direction,
@@ -78,13 +78,13 @@ public class MonsterMovement : MonoBehaviour
 
         if (hit)
         {
-            // ×ªÏò
+            // ×ªï¿½ï¿½
             direction *= -1;
             UpdateFacingDirection();
         }
     }
 
-    // ¸üÐÂ³¯Ïò
+    // ï¿½ï¿½ï¿½Â³ï¿½ï¿½ï¿½
     void UpdateFacingDirection()
     {
         Vector3 newScale = transform.localScale;
@@ -92,7 +92,7 @@ public class MonsterMovement : MonoBehaviour
         transform.localScale = newScale;
     }
 
-    // »æÖÆÉäÏß gizmo
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ gizmo
     void OnDrawGizmosSelected()
     {
         if (Application.isPlaying)
